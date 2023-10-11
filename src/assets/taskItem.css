@@ -1,0 +1,13 @@
+.delete {
+  border-radius: 15px;
+  background-color: #fe4a49;
+  border: none;
+  height: 1.5rem;
+  width: 3.5rem;
+  color: #fff;
+}
+
+.task-info {
+  display: flex;
+  flex-direction: column;
+}
