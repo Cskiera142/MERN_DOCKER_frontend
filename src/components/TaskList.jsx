@@ -2,14 +2,14 @@ import TaskItem from "./TaskItem";
 import "../assets/taskList.css";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchTasks } from "../app/api/taskSlice";
+import { getTaskAsync } from "../app/api/taskSlice";
 
 const TaskList = () => {
   const tasks = useSelector((state) => state.tasks);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchTasks());
+    dispatch(getTaskAsync());
   }, [dispatch]);
 
   return (

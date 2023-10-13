@@ -1,37 +1,98 @@
-import "../assets/taskItem.css";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { toggleComplete } from "../app/api/taskSlice";
-import { deleteTask } from "../app/api/taskSlice";
+import {
+  toggleCompleteAsync,
+  updateTaskAsync,
+  deleteTask,
+} from "../app/api/taskSlice";
+import "../assets/taskItem.css";
 
 const TaskItem = ({ id, title, description, completed }) => {
   const dispatch = useDispatch();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(title);
+  const [editedDescription, setEditedDescription] = useState(description);
+  const [editedCompleted, setEditedCompleted] = useState(completed);
 
-  const handleCompleteClick = () => {
-    dispatch(toggleComplete({ id: id, completed: !completed }));
+  const handleEditClick = () => {
+    setIsEditing(true);
   };
 
-  const handleDeleteClick = () => {
-    dispatch(deleteTask({ id: id }));
+  const handleSaveClick = () => {
+    // Save the edited values to your data structure or API.
+    dispatch(
+      updateTaskAsync({
+        id,
+        title: editedTitle,
+        description: editedDescription,
+        completed: editedCompleted,
+      })
+    );
+    setIsEditing(false);
+  };
+
+  const handleCancelClick = () => {
+    // Revert changes and exit edit mode.
+    setIsEditing(false);
   };
 
   return (
-    <li>
-      <div>
-        <span>
+    <li className="task-li">
+      {isEditing ? (
+        <div>
           <input
-            className="checkbox"
-            type="checkbox"
-            checked={completed}
-            onChange={handleCompleteClick}
-          ></input>
-          <div className="task-info">
-            <h3>{title}</h3> <p>{description}</p>
+            className="task-info"
+            type="text"
+            value={editedTitle}
+            onChange={(e) => setEditedTitle(e.target.value)}
+          />
+          <input
+            className="task-info"
+            value={editedDescription}
+            onChange={(e) => setEditedDescription(e.target.value)}
+          />
+          <div className="task-div">
+            <input
+              type="checkbox"
+              checked={editedCompleted}
+              onChange={() => setEditedCompleted(!editedCompleted)}
+            />
+            <button className="edit" onClick={handleSaveClick}>
+              Save
+            </button>
+            <button className="edit" onClick={handleCancelClick}>
+              Cancel
+            </button>
           </div>
-        </span>
-        <button onClick={handleDeleteClick} className="delete">
-          Delete
-        </button>
-      </div>
+        </div>
+      ) : (
+        <div>
+          <span>
+            <input
+              className="checkbox"
+              type="checkbox"
+              checked={editedCompleted}
+              onChange={() =>
+                dispatch(
+                  toggleCompleteAsync({ id, completed: !editedCompleted })
+                )
+              }
+            />
+            <div className="task-div">
+              <h3>{editedTitle}</h3> <p>{editedDescription}</p>
+            </div>
+          </span>
+          <button onClick={handleEditClick} className="edit">
+            Edit
+          </button>
+          <button
+            onClick={() => dispatch(deleteTask({ id }))}
+            className="delete"
+          >
+            Delete
+          </button>
+        </div>
+      )}
     </li>
   );
 };

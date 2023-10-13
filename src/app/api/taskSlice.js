@@ -1,64 +1,121 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { nanoid } from "nanoid";
 
-export const fetchTasks = createAsyncThunk("fetchTasks", async () => {
-  const res = await fetch("http://localhost:3500/");
-  try {
-    const tasks = await res.json();
-    return { tasks };
-  } catch (err) {
-    console.log(err);
+export const getTaskAsync = createAsyncThunk("task/getTaskAsync", async () => {
+  const resp = await fetch("http://localhost:3500/taskRoutes");
+  if (resp.ok) {
+    const task = await resp.json();
+    return { task };
   }
 });
 
-// const apiSlice = createSlice({
-//   name: "task",
-//   initialState: {
-//     isLoading: false,
-//     data: null,
-//     isError: false,
-//   },
+export const addTaskAsync = createAsyncThunk(
+  "task/addTaskAsync",
+  async (payload) => {
+    const resp = await fetch(`http://localhost:3500/taskRoutes/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: payload.title,
+        description: payload.description,
+      }),
+    });
 
-//   extraReducers: (builder) => {
-//     builder.addCase(fetchTasks.pending, (state, action) => {
-//       state.isLoading = true;
-//     });
-//     builder.addCase(fetchTasks.fulfilled, (state, action) => {
-//       console.log("fullfilled", action.payload);
-//       state.data = action.payload;
-//       state.isLoading = false;
-//     });
-//     builder.addCase(fetchTasks.rejected, (state, action) => {
-//       console.log("Error", action.payload);
-//       state.isError = true;
-//       state.isLoading = false;
-//     });
-//   },
-// });
+    if (resp.ok) {
+      const task = await resp.json();
+      return { task };
+    }
+  }
+);
 
-const taskSlice = createSlice({
-  name: "tasks",
+export const toggleCompleteAsync = createAsyncThunk(
+  "task/completeTaskAsync",
+  async (payload) => {
+    const resp = await fetch(`http://localhost:3500/taskRoutes/${payload.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ completed: payload.completed }),
+    });
+
+    if (resp.ok) {
+      const task = await resp.json();
+      return { task };
+    }
+  }
+);
+
+export const updateTaskAsync = createAsyncThunk(
+  "task/completeTaskAsync",
+  async (payload) => {
+    const resp = await fetch(`http://localhost:3500/taskRoutes/${payload.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ completed: payload.completed }),
+    });
+
+    if (resp.ok) {
+      const task = await resp.json();
+      return { task };
+    }
+  }
+);
+
+export const deleteTaskAsync = createAsyncThunk(
+  "task/deleteTaskAsync",
+  async (payload) => {
+    const resp = await fetch(`http://localhost:3500/taskRoutes/${payload.id}`, {
+      method: "DELETE",
+    });
+
+    if (resp.ok) {
+      return { id: payload.id };
+    }
+  }
+);
+
+export const taskSlice = createSlice({
+  name: "task",
   initialState: [],
   reducers: {
     addTask: (state, action) => {
-      const newTask = {
-        id: Date.now(),
+      const task = {
+        id: nanoid(),
         title: action.payload.title,
-        description: action.payload.description,
         completed: false,
       };
-      state.push(newTask);
+      state.push(task);
     },
     toggleComplete: (state, action) => {
       const index = state.findIndex((task) => task.id === action.payload.id);
       state[index].completed = action.payload.completed;
     },
     deleteTask: (state, action) => {
+      console.log("deleted:", action.payload.id);
       return state.filter((task) => task.id !== action.payload.id);
     },
   },
   extraReducers: {
-    [fetchTasks.fulfilled]: (state, action) => {
-      return action.payload.tasks;
+    [getTaskAsync.fulfilled]: (state, action) => {
+      console.log("succeeded");
+      return action.payload.task;
+    },
+    [addTaskAsync.fulfilled]: (state, action) => {
+      state.push(action.payload.task);
+    },
+    [toggleCompleteAsync.fulfilled]: (state, action) => {
+      const index = state.findIndex(
+        (task) => task.id === action.payload.task.id
+      );
+      state[index].completed = action.payload.task.completed;
+    },
+    [deleteTaskAsync.fulfilled]: (state, action) => {
+      return state.filter((task) => task.id !== action.payload.id);
     },
   },
 });

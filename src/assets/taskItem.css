@@ -7,7 +7,39 @@
   color: #fff;
 }
 
-.task-info {
+.edit {
+  height: 2rem;
+  width: 5rem;
+  border-radius: 15px;
+  border: 2px solid #f45b69;
+  margin: 0 1rem;
+}
+
+.edit:hover {
+  background-color: #f45b69;
+  color: #fff;
+}
+
+.task-info,
+.task-li textarea {
+  display: flex;
+  flex-direction: column;
+  height: 2rem;
+  width: 30rem;
+  border: 1px solid black;
+  border-radius: 15px;
+  margin-bottom: 1rem;
+  margin-left: 2rem;
+  padding-left: 10px;
+}
+
+.task-li {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.task-div {
   display: flex;
   flex-direction: column;
 }

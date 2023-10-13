@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "../assets/addTaskForm.css";
 import { useDispatch } from "react-redux";
 import { addTask } from "../app/api/taskSlice";
@@ -23,14 +23,16 @@ const AddTaskForm = () => {
           placeholder="Add task..."
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          maxLength={20}
         ></input>
-        <textarea
+        <input
           className="form-input"
           type="text"
           placeholder="Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-        ></textarea>
+          maxLength={50}
+        ></input>
         <button>Submit</button>
       </label>
     </form>

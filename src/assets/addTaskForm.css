@@ -11,6 +11,7 @@ form label {
   border-radius: 15px;
   border: 1px solid black;
   padding-left: 5px;
+  resize: none;
 }
 
 form button {
