@@ -19,7 +19,6 @@ const TaskItem = ({ id, title, description, completed }) => {
   };
 
   const handleSaveClick = () => {
-    // Save the edited values to your data structure or API.
     dispatch(
       updateTaskAsync({
         id,
@@ -32,7 +31,6 @@ const TaskItem = ({ id, title, description, completed }) => {
   };
 
   const handleCancelClick = () => {
-    // Revert changes and exit edit mode.
     setIsEditing(false);
   };
 

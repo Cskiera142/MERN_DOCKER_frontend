@@ -49,7 +49,7 @@ export const toggleCompleteAsync = createAsyncThunk(
 );
 
 export const updateTaskAsync = createAsyncThunk(
-  "task/completeTaskAsync",
+  "task/updateTaskAsync",
   async (payload) => {
     const resp = await fetch(`http://localhost:3500/taskRoutes/${payload.id}`, {
       method: "PATCH",
@@ -87,6 +87,7 @@ export const taskSlice = createSlice({
       const task = {
         id: nanoid(),
         title: action.payload.title,
+        description: action.payload.description,
         completed: false,
       };
       state.push(task);
