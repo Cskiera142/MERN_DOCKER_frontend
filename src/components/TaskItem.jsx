@@ -21,7 +21,7 @@ const TaskItem = ({ id, title, description, completed }) => {
   const handleSaveClick = () => {
     dispatch(
       updateTaskAsync({
-        id,
+        id: id,
         title: editedTitle,
         description: editedDescription,
         completed: editedCompleted,
